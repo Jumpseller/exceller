@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Exceller - JumpSeller</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Le styles -->
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <style>
+  body {
+    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+  }
+  </style>
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="shortcut icon" href="img/favicon.ico">
+</head>
+
+<body>
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="http://jumpseller.com" target="_blank">Exceller</a>
+        <div class="nav-collapse collapse">
+        </div><!--/.nav-collapse -->
+
+        <% if session['logged'] && session['logged'] == true %>
+        <a class="btn btn-medium btn-info pull-right" href="/sign-out">Logout</a>
+        <% else %>
+        <a class="btn btn-medium btn-success pull-right" href="/sign-in">Login</a>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+    <% if session['error'] && !session['error'].empty? %>
+    <div class="alert">
+      <a href="#" class="close" data-dismiss="alert">×</a>
+      <p><%=session['error']%></p>
+    </div>
+    <% end %>
+    <% if session['logged'] == true %>
+    <h2>Products</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ID</th>
+          <th>SKU</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>        
+        <% j = 1 %>        
+        <% $products.each do |product| %>
+          <% if product["product"]["variants"].empty? %>
+            <tr>
+              <td><%= j %></td>
+              <td><a href="<%= "https://#{session['login']}.jumpseller.com/admin/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><%= product["product"]["sku"] %></td>
+              <td><%= product["product"]["name"] %></td>
+              <td><%= product["product"]["price"] %></td>
+              <td><%= product["product"]["stock"] %></td>
+              <td><%= product["product"]["weight"] %></td>
+            </tr>
+          <% j += 1 %>
+        <% else %>
+          <% product["product"]["variants"].each do |variant| %>
+            <tr>
+              <td><%= j %></td>
+              <td><a href="<%= "https://#{session['login']}.jumpseller.com/admin/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><%= variant["sku"] %></td>
+              <td><%= property["weight"] %></td>
+              <td><%= property["stock"] %></td>
+              <td><%= property["price"] %></td>
+            </tr>
+            <% j += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+  <% else %>
+  <p>Please login.</p>
+  <% end %>
+  <footer>
+    <p>© Jumpseller <%= Time.now.year %></p>
+  </footer>
+
+</div> <!-- /container -->
+
+<!-- Le javascript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
