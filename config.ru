@@ -1,2 +1,2 @@
-#require './export.rb'
+require './app.rb'
 run Sinatra::Application
