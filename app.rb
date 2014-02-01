@@ -12,7 +12,7 @@ enable :sessions
 
 DEBUG = false
 
-api_host = "api.jumpseller.com" #ENV['RACK_ENV'] == "production" ? "api.jumpseller.com" : "api.localhost"
+api_host = ENV['RACK_ENV'] == "production" ? "api.jumpseller.com" : "api.localhost"
 
 API_VERSION = "v1"
 PRODUCTS_URL_LIST   = "http://#{api_host}/#{API_VERSION}/products/available.json"
@@ -145,9 +145,16 @@ post '/products_edit' do
   redirect "/"
 end
 
+post "/edit-product" do
+  product_update_url = "#{PRODUCTS_URL}/#{params["pk"]}"
+  product_to_edit = {params["name"] => params["value"]}
+  put_api_data(product_update_url, {'product' => product_to_edit}.to_json, session['login'], session['token'])
+  ''
+end
+
 post "/sign-in" do
 
-  session['login'] = params["store-code"] 
+  session['login'] = params["api-login"] 
   session['token'] = params["api-token"]
 
   session['logged']   = true

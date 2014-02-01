@@ -9,13 +9,14 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
-    <title>Static Top Navbar Example for Bootstrap</title>
+    <title>Exceller | Jumpseller</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="navbar-static-top.css" rel="stylesheet">
+    <link href="css/navbar-static-top.css" rel="stylesheet">
+    <link href="css/bootstrap-editable.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -67,8 +68,8 @@
           <% else %>
             <form class="navbar-form navbar-right" role="form" action="/sign-in" method="post">
               <div class="form-group">
-                <label class="sr-only" for="store_code">Store Code</label>
-                <input type="text" name="store-code" class="form-control" placeholder="Store Code">
+                <label class="sr-only" for="api_login">API Login</label>
+                <input type="text" name="api-login" class="form-control" placeholder="API Login">
               </div>
               <div class="form-group">
                 <label class="sr-only" for="api_token">API Token</label>
@@ -102,11 +103,11 @@
             <tr>
               <td><%= j %></td>
               <td><a href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
-              <td><%= product["product"]["name"] %></td>
-              <td><%= product["product"]["sku"] %></td>              
-              <td><%= product["product"]["weight"] %></td>
-              <td><%= product["product"]["stock"] %></td>
-              <td><%= product["product"]["price"] %></td>
+              <td ><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
+              <td ><a href="#" id="sku" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["sku"] %></a></td>
+              <td id="product-weight"><%= product["product"]["weight"] %></td>
+              <td id="product-stock"><%= product["product"]["stock"] %></td>
+              <td id="product-price"><%= product["product"]["price"] %></td>
             </tr>
             <% j += 1 %>
           <% else #product with variants %>
@@ -130,10 +131,10 @@
                     <% if index < variant["options"].size - 1 %>, <% end %>
                   <% end %>
                   </td>
-                  <td><%= variant["sku"] %></td>
-                  <td><%= variant["weight"] %></td>
-                  <td><%= variant["stock"] %></td>
-                  <td><%= variant["price"] %></td>
+                  <td id="variant-sku"><%= variant["sku"] %></td>
+                  <td id="variant-weight"><%= variant["weight"] %></td>
+                  <td id="variant-stock"><%= variant["stock"] %></td>
+                  <td id="variant-price"><%= variant["price"] %></td>
                 </tr>
               <% end %>
             
@@ -151,5 +152,14 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-editable.js"></script>
+    <script>
+    $(function(){
+      $.fn.editable.defaults.mode = 'inline';
+      $('.editable').editable({
+        url: '/edit-product'
+      });
+    });
+    </script>
   </body>
 </html>
