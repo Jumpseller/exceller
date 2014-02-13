@@ -1,12 +1,11 @@
 helpers do
 
-  def get_api_data(url, login, token)
+  def get_api_data(url, params = {})
     begin
-      url_auth = url_auth(url,login,token)
+      url_auth = url_auth(url, session['login'], session['token'], params)
       result  = open(url_auth, :read_timeout => 300) {|f| f.read }
     rescue RuntimeError => bang
-      p "!Rescuing!"
-      p bang
+      logger.error "!Rescuing!" + bang.to_s
     end
     JSON.parse(result)
   end
@@ -31,8 +30,11 @@ helpers do
     end
   end
 
-  def url_auth(url, login, token)
-    url + "?login=#{login.to_s}&authtoken=#{token.to_s}" 
+  def url_auth(url, login, token, params = {})
+    uri = Addressable::URI.parse(url)
+    uri.query_values = {:login => login.to_s, :authtoken => token.to_s}
+    uri.query_values = uri.query_values.merge( params )
+    uri.to_s
   end
 
   def h(text)

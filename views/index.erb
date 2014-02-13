@@ -87,7 +87,6 @@
       <table class="table table-hover">
       <thead>
         <tr>
-          <th>#</th>
           <th>ID</th>
           <th>Name</th>
           <th>SKU</th>
@@ -96,24 +95,19 @@
           <th>Price</th>
         </tr>
       </thead>
-      <tbody>        
-        <% j = 1 %>        
-        <% $products.each do |product| %>
+      <tbody>             
+        <% @products.each do |product| %>
           <% if !has_variants?(product) #simple product%>
-            <tr>
-              <td><%= j %></td>
-              <td><a href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
-              <td ><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
-              <td ><a href="#" id="sku" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["sku"] %></a></td>
-              <td id="product-weight"><%= product["product"]["weight"] %></td>
-              <td id="product-stock"><%= product["product"]["stock"] %></td>
-              <td id="product-price"><%= product["product"]["price"] %></td>
-            </tr>
-            <% j += 1 %>
+            <tr>    
+              <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
+              <td><a href="#" id="sku" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["sku"] %></a></td>
+              <td><a href="#" id="weight" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["weight"] %></td>
+              <td><a href="#" id="stock" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["stock"] %></td>
+              <td><a href="#" id="price" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["price"] %></td>
           <% else #product with variants %>
             <tr>
-              <td><%= j %></td>
-              <td><a href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
               <td><%= product["product"]["name"] %></td>
               <td><!--sku--></td>
               <td><!--weight--></td>
@@ -122,7 +116,6 @@
             </tr>
               <% product["product"]["variants"].each do |variant| %>
                 <tr>
-                  <td class="active"><!--#--></td>
                   <td class="active"><!--id--></td>
                   <td>
                   <% variant["options"].each_with_index do |option, index| %>
@@ -137,12 +130,17 @@
                   <td id="variant-price"><%= variant["price"] %></td>
                 </tr>
               <% end %>
-            
-            <% j += 1 %>
           <% end %>
         <% end %>
       </tbody>
     </table>
+
+    <ul class="pager">
+      <li class="previous <%= "disabled" if @page - 1 < 1 %>"><a href="<%= "/?page=#{@page - 1}" %>">&larr; Previous</a></li>
+      <li class="badge"><%= "#{@page > 1 ? (PRODUCTS_LIMIT * @page) : @products.count} of #{@products_count} Products" %></li>
+      <li class="badge"><%= "Page #{@page} of #{(@products_count.to_f/PRODUCTS_LIMIT).ceil}" %></li>
+      <li class="next <%= "disabled" if @page * PRODUCTS_LIMIT > @products_count %>"><a href="<%= "/?page=#{@page + 1}" %>">Next &rarr;</a></li>
+    </ul>
 
     </div> <!-- /container -->
 
