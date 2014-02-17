@@ -7,7 +7,7 @@ require 'addressable/uri'
 require_relative 'helpers/general'
 require_relative 'helpers/rest'
 
-enable :sessions, :logging
+enable :sessions
 set :session_secret, '*widetail'
 
 API_HOST                = "api.jumpseller.com"
@@ -29,7 +29,7 @@ get '/' do
   count = get_api_data(PRODUCTS_URL_LIST_COUNT)
   @products_count = count["count"]
 
-  logger.info "Products fetched: #{@products.count}"
+  #p logger.info "Products fetched: #{@products.count}"
   erb :index
 end
 
