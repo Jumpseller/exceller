@@ -8,12 +8,13 @@ require_relative 'helpers/general'
 require_relative 'helpers/rest'
 
 enable :sessions
+set :session_secret, '*widetail'
 
 API_HOST                = "api.jumpseller.com"
 API_VERSION             = "v1"
-PRODUCTS_URL_LIST       = "http://#{api_host}/#{API_VERSION}/products/available.json"
-PRODUCTS_URL_LIST_COUNT = "http://#{api_host}/#{API_VERSION}/products/available/count.json"
-PRODUCTS_URL            = "http://#{api_host}/#{API_VERSION}/products"
+PRODUCTS_URL_LIST       = "http://#{API_HOST}/#{API_VERSION}/products/available.json"
+PRODUCTS_URL_LIST_COUNT = "http://#{API_HOST}/#{API_VERSION}/products/available/count.json"
+PRODUCTS_URL            = "http://#{API_HOST}/#{API_VERSION}/products"
 PRODUCTS_LIMIT          = 50
 
 get '/' do
