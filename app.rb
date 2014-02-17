@@ -7,7 +7,7 @@ require 'addressable/uri'
 require_relative 'helpers/general'
 require_relative 'helpers/rest'
 
-enable :sessions
+enable :sessions, :logging
 set :session_secret, '*widetail'
 
 API_HOST                = "api.jumpseller.com"
