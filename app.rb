@@ -12,8 +12,8 @@ set :session_secret, '*widetail'
 
 API_HOST                = "api.jumpseller.com"
 API_VERSION             = "v1"
-PRODUCTS_URL_LIST       = "http://#{API_HOST}/#{API_VERSION}/products/available.json"
-PRODUCTS_URL_LIST_COUNT = "http://#{API_HOST}/#{API_VERSION}/products/available/count.json"
+PRODUCTS_URL_LIST       = "http://#{API_HOST}/#{API_VERSION}/products.json" #all products
+PRODUCTS_URL_LIST_COUNT = "http://#{API_HOST}/#{API_VERSION}/products/count.json" #all products count
 PRODUCTS_URL            = "http://#{API_HOST}/#{API_VERSION}/products"
 PRODUCTS_LIMIT          = 50
 
@@ -37,6 +37,15 @@ post "/edit-product" do
   product_update_url = "#{PRODUCTS_URL}/#{params["pk"]}"
   product_to_edit = {params["name"] => params["value"]}
   put_api_data(product_update_url, {'product' => product_to_edit}.to_json, session['login'], session['token'])
+  ''
+end
+
+post "/edit-product-variant" do
+  ids = params["pk"].split('-')
+  product_id = ids[0];variant_id = ids[1]
+  product_update_url = "#{PRODUCTS_URL}/#{product_id}/variants/#{variant_id}"
+  variant_to_edit = {params["name"] => params["value"]}
+  put_api_data(product_update_url, {'variant' => variant_to_edit}.to_json, session['login'], session['token'])
   ''
 end
 
