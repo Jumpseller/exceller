@@ -9,8 +9,18 @@ require_relative 'helpers/rest'
 set :bind, 'localhost'
 set :tmp_path, ( ENV['RACK_ENV'] == "production" ? File.dirname(__FILE__) + "/tmp" : File.dirname(__FILE__) )
 enable :sessions
+set :session_secret, '*widetail'
 
+<<<<<<< HEAD
 DEBUG = false
+=======
+API_HOST                = "api.jumpseller.com"
+API_VERSION             = "v1"
+PRODUCTS_URL_LIST       = "http://#{API_HOST}/#{API_VERSION}/products/available.json"
+PRODUCTS_URL_LIST_COUNT = "http://#{API_HOST}/#{API_VERSION}/products/available/count.json"
+PRODUCTS_URL            = "http://#{API_HOST}/#{API_VERSION}/products"
+PRODUCTS_LIMIT          = 50
+>>>>>>> 4aef944... publishing
 
 api_host = ENV['RACK_ENV'] == "production" ? "api.jumpseller.com" : "api.localhost"
 
