@@ -30,6 +30,16 @@ helpers do
     end
   end
 
+  def delete_api_data(url, login, token)
+    url_auth = url_auth(url,login, token)
+    res = REST.delete(url_auth)
+    if res.code == "200"
+      [true, res.message]
+    else
+      [false, res.message]
+    end
+  end
+
   def url_auth(url, login, token, params = {})
     uri = Addressable::URI.parse(url)
     uri.query_values = {:login => login.to_s, :authtoken => token.to_s}

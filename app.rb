@@ -51,6 +51,12 @@ post "/edit-product-variant" do
   ''
 end
 
+get "/delete-product/:id" do
+  product_delete_url = "#{PRODUCTS_URL}/#{params[:id]}"
+  delete_api_data(product_delete_url, session['login'], session['token'])
+  redirect "/"
+end
+
 post "/sign-in" do
 
   session['login'] = params["api-login"] 
