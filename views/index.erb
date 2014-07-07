@@ -87,34 +87,31 @@
       <table class="table table-hover">
       <thead>
         <tr>
-          <th>#</th>
           <th>ID</th>
           <th>Name</th>
+          <th>Status</th>
           <th>SKU</th>
           <th>Weight</th>
           <th>Stock</th>
           <th>Price</th>
         </tr>
       </thead>
-      <tbody>        
-        <% j = 1 %>        
-        <% $products.each do |product| %>
+      <tbody>             
+        <% @products.each do |product| %>
           <% if !has_variants?(product) #simple product%>
-            <tr>
-              <td><%= j %></td>
-              <td><a href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
-              <td ><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
-              <td ><a href="#" id="sku" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["sku"] %></a></td>
-              <td id="product-weight"><%= product["product"]["weight"] %></td>
-              <td id="product-stock"><%= product["product"]["stock"] %></td>
-              <td id="product-price"><%= product["product"]["price"] %></td>
-            </tr>
-            <% j += 1 %>
+            <tr>    
+              <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
+              <td><a href="#" id="status" class="editable" data-type="select" data-source="{ 'available': 'Available', 'not-available': 'Not Available', 'disabled': 'Disabled'}" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["status"] %></a></td>
+              <td><a href="#" id="sku" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["sku"] %></a></td>
+              <td><a href="#" id="weight" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["weight"] %></td>
+              <td><a href="#" id="stock" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["stock"] %></td>
+              <td><a href="#" id="price" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["price"] %></td>
           <% else #product with variants %>
             <tr>
-              <td><%= j %></td>
-              <td><a href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
-              <td><%= product["product"]["name"] %></td>
+              <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
+              <td><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
+              <td><a href="#" id="status" class="editable" data-type="select" data-source="{ 'available': 'Available', 'not-available': 'Not Available', 'disabled': 'Disabled'}" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["status"] %></a></td>
               <td><!--sku--></td>
               <td><!--weight--></td>
               <td><!--stock--></td>
@@ -122,7 +119,6 @@
             </tr>
               <% product["product"]["variants"].each do |variant| %>
                 <tr>
-                  <td class="active"><!--#--></td>
                   <td class="active"><!--id--></td>
                   <td>
                   <% variant["options"].each_with_index do |option, index| %>
@@ -131,20 +127,32 @@
                     <% if index < variant["options"].size - 1 %>, <% end %>
                   <% end %>
                   </td>
-                  <td id="variant-sku"><%= variant["sku"] %></td>
-                  <td id="variant-weight"><%= variant["weight"] %></td>
-                  <td id="variant-stock"><%= variant["stock"] %></td>
-                  <td id="variant-price"><%= variant["price"] %></td>
+                  <td><!--product status--></td>
+                  <% prod_id = "#{product["product"]["id"]}-#{variant["id"]}" %>
+                  <td><a href="#" id="sku" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["sku"] %></td>
+                  <td><a href="#" id="weight" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["weight"] %></td>
+                  <td><a href="#" id="stock" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["stock"] %></td>
+                  <td><a href="#" id="price" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["price"] %></td>
                 </tr>
               <% end %>
-            
-            <% j += 1 %>
           <% end %>
         <% end %>
       </tbody>
     </table>
 
+    <ul class="pager">
+      <% if @page > 1 %><li class="previous"><a href="<%= "/?page=#{@page - 1}" %>">&larr; Previous</a></li><% end %>
+      <li class="badge"><%= "#{@page > 1 ? (PRODUCTS_LIMIT * @page) : @products.count} of #{@products_count} Products" %></li>
+      <li class="badge"><%= "Page #{@page} of #{(@products_count.to_f/PRODUCTS_LIMIT).ceil}" %></li>
+      <% if @products_count > @page * PRODUCTS_LIMIT %><li class="next"><a href="<%= "/?page=#{@page + 1}" %>">Next &rarr;</a></li><%end%>
+    </ul>
+
     </div> <!-- /container -->
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted center">© 2014 <a target="_blank" href="http://jumpseller.com">Jumpseller</a> · Exceller is an external mini-app. You can use it and <a target="_blank" href="https://github.com/Jumpseller/exceller">modify it</a> as you wish.</p>
+      </div>
+    </div>
 
 
     <!-- Bootstrap core JavaScript
@@ -158,6 +166,9 @@
       $.fn.editable.defaults.mode = 'inline';
       $('.editable').editable({
         url: '/edit-product'
+      });
+      $('.editable-variant').editable({
+        url: '/edit-product-variant'
       });
     });
     </script>
