@@ -12,7 +12,7 @@ set :session_secret, '*widetail'
 
 DEBUG = false
 
-API_HOST                = "api.localhost" #"api.jumpseller.com"
+API_HOST                = "api.jumpseller.com"
 API_VERSION             = "v1"
 PRODUCTS_URL_LIST       = "http://#{API_HOST}/#{API_VERSION}/products.json" #all products
 PRODUCTS_URL_LIST_COUNT = "http://#{API_HOST}/#{API_VERSION}/products/count.json" #all products count
