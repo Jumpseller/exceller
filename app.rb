@@ -64,11 +64,9 @@ post "/edit-product-variant" do
 end
 
 post "/edit-product-categories" do
-  params["value"].each do |id|
-    categories_update_url = "#{CATEGORIES_URL}/#{id}"
-    category_to_edit = {"products" => [{ "id" => params["pk"]}]}
-    put_api_data(categories_update_url, { 'category' => category_to_edit}.to_json)
-  end  
+  product_update_url = "#{PRODUCTS_URL}/#{params["pk"]}"
+  p product_to_edit = {"categories" => params["value"].map{ |cat_id| { "id" => cat_id}} }
+  put_api_data(product_update_url, {'product' => product_to_edit}.to_json)
   ''
 end
 

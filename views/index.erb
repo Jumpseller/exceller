@@ -112,7 +112,7 @@
               <td><a href="#" class="categories" data-type="checklist" data-pk="<%=product["product"]["id"]%>" data-title="Select Categories"></a></td>
               <td><a href="<%= "/delete-product/#{product["product"]["id"]}" %>"><i class="fa fa-trash-o"></i></a></td>
           <% else #product with variants %>
-            <tr>
+            <tr id="<%=product["product"]["id"]%>">
               <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
               <td><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
               <td><a href="#" id="status" class="editable" data-type="select" data-source="{ 'available': 'Available', 'not-available': 'Not Available', 'disabled': 'Disabled'}" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["status"] %></a></td>
@@ -183,7 +183,7 @@
       });
       $('.open-categories').click(function(e) {
         var product_id = $(this).parents("tr").attr("id"); //find product id
-        var product_categories = $('.open-categories').first().parent().next().children("a.categories"); //find editable <a> holder
+        var product_categories = $(this).parent().next().children("a.categories"); //find editable <a> holder
         var product_url = '/product/' + product_id
         
         $.get(product_url, function( json ) {
