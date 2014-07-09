@@ -5,7 +5,6 @@ module REST
     uri = URI.parse(url)
     http = Net::HTTP.start(uri.host, uri.port)
     resp = http.send_request('GET', uri.request_uri)
-    resp.body
   end
 
   def self.post(url, data)

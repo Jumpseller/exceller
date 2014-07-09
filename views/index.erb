@@ -41,9 +41,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Products</a></li>
+            <li class="active"><a href="/products">Products</a></li>            
             <!--
-            <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
@@ -88,19 +87,20 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
+          <th style="width:80%;">Name</th>
           <th>Status</th>
           <th>SKU</th>
           <th>Weight</th>
           <th>Stock</th>
           <th>Price</th>
-          <th></th>
+          <th style="width:20px;" colspan="2"></th>
+          <th style="width:20px;"></th>
         </tr>
       </thead>
       <tbody>             
         <% @products.each do |product| %>
           <% if !has_variants?(product) #simple product%>
-            <tr>    
+            <tr id="<%=product["product"]["id"]%>">    
               <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
               <td><a href="#" id="name" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["name"] %></a></td>
               <td><a href="#" id="status" class="editable" data-type="select" data-source="{ 'available': 'Available', 'not-available': 'Not Available', 'disabled': 'Disabled'}" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["status"] %></a></td>
@@ -108,6 +108,8 @@
               <td><a href="#" id="weight" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["weight"] %></td>
               <td><a href="#" id="stock" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["stock"] %></td>
               <td><a href="#" id="price" class="editable" data-type="text" data-pk="<%=product["product"]["id"]%>"><%= product["product"]["price"] %></td>
+              <td><i class="fa fa-th-large open-categories"></td>
+              <td><a href="#" class="categories" data-type="checklist" data-pk="<%=product["product"]["id"]%>" data-title="Select Categories"></a></td>
               <td><a href="<%= "/delete-product/#{product["product"]["id"]}" %>"><i class="fa fa-trash-o"></i></a></td>
           <% else #product with variants %>
             <tr>
@@ -118,6 +120,8 @@
               <td><!--weight--></td>
               <td><!--stock--></td>
               <td><!--price--></td>
+              <td><i class="fa fa-th-large open-categories"></td>
+              <td><a href="#" class="categories" data-type="checklist" data-pk="<%=product["product"]["id"]%>" data-title="Select Categories"></a></td>
               <td><a href="<%= "/delete-product/#{product["product"]["id"]}" %>"><i class="fa fa-trash-o"></i></a></td>
             </tr>
               <% product["product"]["variants"].each do |variant| %>
@@ -136,6 +140,8 @@
                   <td><a href="#" id="weight" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["weight"] %></td>
                   <td><a href="#" id="stock" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["stock"] %></td>
                   <td><a href="#" id="price" class="editable-variant" data-type="text" data-pk='<%=prod_id%>'><%= variant["price"] %></td>
+                  <td><!--cats--></td>
+                  <td><!--cats--></td>
                   <td><!--delete product--></td>
                 </tr>
               <% end %>
@@ -167,6 +173,7 @@
     <script src="js/bootstrap-editable.js"></script>
     <script>
     $(function(){
+
       $.fn.editable.defaults.mode = 'inline';
       $('.editable').editable({
         url: '/edit-product'
@@ -174,7 +181,33 @@
       $('.editable-variant').editable({
         url: '/edit-product-variant'
       });
-    });
+      $('.open-categories').click(function(e) {
+        var product_id = $(this).parents("tr").attr("id"); //find product id
+        var product_categories = $('.open-categories').first().parent().next().children("a.categories"); //find editable <a> holder
+        var product_url = '/product/' + product_id
+        
+        $.get(product_url, function( json ) {
+          var product = $.parseJSON(json).product;
+
+          var values = [];
+          $.each(product.categories, function( index, value ) {
+            values.push(value.id);
+          });
+
+          product_categories.editable({
+            mode: 'popup',
+            value: values,
+            display : false,
+            placement: 'left',
+            source: '<%= @categories_json %>',
+            url: '/edit-product-categories'
+          });
+          product_categories.editable('toggle');
+        });
+        
+      });
+
+    });//function
     </script>
   </body>
 </html>

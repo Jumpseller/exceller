@@ -1,8 +1,9 @@
 helpers do
 
+  #soon to deprecate
   def get_api_data(url, params = {})
     begin
-      url_auth = url_auth(url, session['login'], session['token'], params)
+      url_auth = url_auth(url, params)
       result  = open(url_auth, :read_timeout => 300) {|f| f.read }
     rescue RuntimeError => bang
       logger.error "!Rescuing!" + bang.to_s
@@ -10,8 +11,18 @@ helpers do
     JSON.parse(result)
   end
 
-  def put_api_data(url, params, login, token)
-    url_auth = url_auth(url,login,token)
+  def get_api_data2(url)
+    url_auth = url_auth(url)
+    res = REST.get(url_auth)
+    if res.code == "200"
+      [true, res.body]
+    else
+      [false, res.body]
+    end
+  end
+
+  def put_api_data(url, params)
+    url_auth = url_auth(url)
     res = REST.put(url_auth, params)
     if res.code == "200"
       [true, res.message]
@@ -20,8 +31,8 @@ helpers do
     end
   end
 
-  def post_api_data(url, params, login, token)
-    url_auth = url_auth(url,login,token)
+  def post_api_data(url, params)
+    url_auth = url_auth(url)
     res = REST.post(url_auth, params)
     if res.code == "200"
       [true, res.message]
@@ -30,8 +41,8 @@ helpers do
     end
   end
 
-  def delete_api_data(url, login, token)
-    url_auth = url_auth(url,login, token)
+  def delete_api_data(url)
+    url_auth = url_auth(url)
     res = REST.delete(url_auth)
     if res.code == "200"
       [true, res.message]
@@ -40,9 +51,9 @@ helpers do
     end
   end
 
-  def url_auth(url, login, token, params = {})
+  def url_auth(url, params = {})
     uri = Addressable::URI.parse(url)
-    uri.query_values = {:login => login.to_s, :authtoken => token.to_s}
+    uri.query_values = {:login => session['login'].to_s, :authtoken => session['token'].to_s}
     uri.query_values = uri.query_values.merge( params )
     uri.to_s
   end
