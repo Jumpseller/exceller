@@ -1,7 +1,8 @@
 ## Jumpseller - Exceller  
-Edit your store's Products on the fly  
+This is an official Jumpseller Ruby mini-application using its v1 API, allowing to edit Products on the fly.
 
 ##API Access
+
 To get your API's `login` / `authtoken`, visit your Account Page at your store's Admin Panel (at the top-right corner).
 
 ## Usage

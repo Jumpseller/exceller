@@ -1,13 +1,13 @@
 require 'httparty'
 helpers do
 
-  #soon to deprecate
   def get_api_data(url, params = {}, parse_json = false)
     res = HTTParty.get(url_auth(url))
     message = parse_json ? JSON.parse(res.body) : res.body
     res.code == "200" ? [true, message] : [false, message]
   end
 
+  # soon to deprecate
   def get_api_data2(url)
     url_auth = url_auth(url)
     res = REST.get(url_auth)
