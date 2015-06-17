@@ -41,22 +41,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/products">Products</a></li>            
-            <!--
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-            -->
+            <li class="active"><a href="/products">Products</a></li>
           </ul>
 
           <% if session['logged'] && session['logged'] == true %>
@@ -97,8 +82,9 @@
           <th style="width:20px;"></th>
         </tr>
       </thead>
-      <tbody>             
-        <% @products.each do |product| %>
+      <tbody>
+        <% if @products %>
+        <% @products.each do |product| %>        
           <% if !has_variants?(product) #simple product%>
             <tr id="<%=product["product"]["id"]%>">    
               <td><a target="_blank" href="<%= "#{url_admin}/products/edit/#{product["product"]["id"]}" %>"><%= product["product"]["id"] %></a></td>
@@ -147,15 +133,26 @@
               <% end %>
           <% end %>
         <% end %>
+        <% else %>
+          <tr>
+            <td style="text-align:center;" colspan="10">
+              <b>Login First</b>
+              <br/><br/>              
+              <p>Check your Jumpseller API credentials at your Admin Panel > Account Page.</p>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
 
+    <% if @page %>
     <ul class="pager">
       <% if @page > 1 %><li class="previous"><a href="<%= "/?page=#{@page - 1}" %>">&larr; Previous</a></li><% end %>
       <li class="badge"><%= "#{@page > 1 ? (PRODUCTS_LIMIT * @page) : @products.count} of #{@products_count} Products" %></li>
       <li class="badge"><%= "Page #{@page} of #{(@products_count.to_f/PRODUCTS_LIMIT).ceil}" %></li>
       <% if @products_count > @page * PRODUCTS_LIMIT %><li class="next"><a href="<%= "/?page=#{@page + 1}" %>">Next &rarr;</a></li><%end%>
     </ul>
+    <% end %>
 
     </div> <!-- /container -->
     <div id="footer">
@@ -199,7 +196,7 @@
             value: values,
             display : false,
             placement: 'left',
-            source: '<%= @categories_json %>',
+            source: '<%= @categories.to_json %>',
             url: '/edit-product-categories'
           });
           product_categories.editable('toggle');

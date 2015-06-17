@@ -1,14 +1,11 @@
+require 'httparty'
 helpers do
 
   #soon to deprecate
-  def get_api_data(url, params = {})
-    begin
-      url_auth = url_auth(url, params)
-      result  = open(url_auth, :read_timeout => 300) {|f| f.read }
-    rescue RuntimeError => bang
-      logger.error "!Rescuing!" + bang.to_s
-    end
-    JSON.parse(result)
+  def get_api_data(url, params = {}, parse_json = false)
+    res = HTTParty.get(url_auth(url))
+    message = parse_json ? JSON.parse(res.body) : res.body
+    res.code == "200" ? [true, message] : [false, message]
   end
 
   def get_api_data2(url)
@@ -22,23 +19,12 @@ helpers do
   end
 
   def put_api_data(url, params)
-    url_auth = url_auth(url)
-    res = REST.put(url_auth, params)
-    if res.code == "200"
-      [true, res.message]
-    else
-      [false, res.message]
-    end
-  end
-
-  def post_api_data(url, params)
-    url_auth = url_auth(url)
-    res = REST.post(url_auth, params)
-    if res.code == "200"
-      [true, res.message]
-    else
-      [false, res.message]
-    end
+    res = HTTParty.put(url_auth(url), { 
+      body: params.to_json,
+      login: params[:login],
+      headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    })
+    res.code == "200" ? [true, res.body] : [false, res.body]
   end
 
   def delete_api_data(url)
@@ -51,6 +37,7 @@ helpers do
     end
   end
 
+  # adds the login and token as query strings.
   def url_auth(url, params = {})
     uri = Addressable::URI.parse(url)
     uri.query_values = {:login => session['login'].to_s, :authtoken => session['token'].to_s}
